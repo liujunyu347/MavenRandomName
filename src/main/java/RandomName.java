@@ -11,17 +11,56 @@ public class RandomName {
                 "Kelly Liu", "Junyu Liu", "Louisss", "Shahbaz Mansahia", "Ahmed Mujtaba", "Ola Temitope Olanrewaju",
                 "shrina Patel", "Siyu Qiu", "TAO TAO", "Abby Truong", "Muhammed Rabiu Umar", "Peiqi Wang", "Samuel Yang"
                 , "Richard Zhou"};
-        String output = RN.getRandomName(names);
-        RN.printOutput(output);
+        RN.start(names);
     }
 
-    private void printOutput(String output){
+    public void start(String[] names){
+        System.out.println("Menu:");
+        System.out.println("exit: exit the program");
+        System.out.println("get: get random name from the current list, and delete it from the current list");
+        System.out.println("show: show current name list");
+        System.out.println("put: put all names into the list");
+        System.out.println("post <Name List File path>: update the name list");
+        System.out.println();
+        RandomName RN = new RandomName();
+        List<String> currList = new ArrayList<String>(Arrays.asList(names));
+        Scanner input = new Scanner(System.in);
+        String[] command = new String[]{"", ""};
+        while (!command[0].equals("exit")){
+            System.out.print("Please enter a command: ");
+            command = input.nextLine().trim().split(" ", 2);
+            if (command[0].equals("get")){
+                String output = RN.getRandomName(currList);
+                RN.printOutput(output, currList.size());
+                currList.remove(output);
+            }else if (command[0].equals("show")){
+                System.out.println(currList);
+            }else if (command[0].equals("put")){
+                currList = new ArrayList<String>(Arrays.asList(names));
+
+            }else if (command[0].equals("post")){
+                if (command.length >= 2){
+                    String[] newList = readString(command[1]);
+                    if (newList != null){
+                        currList = new ArrayList<String>(Arrays.asList(newList));
+                    }
+                }else{
+                    System.out.println("Please enter the input path");
+                }
+
+            }
+        }
+
+    }
+
+    private void printOutput(String output, int size){
         System.out.println(output);
+        System.out.println(size + " names left in the list");
     }
 
-    public String getRandomName(String[] names){
-        int index = getRandom(names.length);
-        return names[index];
+    public String getRandomName(List<String> currList){
+        int index = getRandom(currList.size());
+        return currList.get(index);
 //        JOptionPane.showMessageDialog(null,
 //                names[index],
 //                "A Random Student Name",
@@ -44,12 +83,12 @@ public class RandomName {
             }
             return names;
         }catch (FileNotFoundException e){
-            System.out.println("File not Found");
+            System.out.println("File not found, please check the path");
         }
         return null;
     }
 
     private int getRandom(int len){
-        return (int)(Math.random() * (len));
+        return (int)(Math.random() * len);
     }
 }
